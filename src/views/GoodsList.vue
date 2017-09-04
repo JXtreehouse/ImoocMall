@@ -10,23 +10,23 @@
             <span class="sortby">Sort by:</span>
             <a href="javascript:" class="default cur">Default</a>
             <a href="javascript:" class="price">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
-            <a href="javascript:" class="filterby stopPop">Filter by</a>
+            <a href="javascript:" class="filterby stopPop" @click="showFilterPop">Filter by</a>
           </div>
           <div class="accessory-result">
             <!-- filter -->
-            <div class="filter stopPop" id="filter">
+            <div class="filter stopPop" id="filter" :class="{'filterby-show' : filterBy}">
               <dl class="filter-price">
                 <dt>Price:</dt>
                 <dd>
                   <a href="javascript:"
-                    :class="{'cur': priceChecked === 'all'}"
+                    :class="{'cur' : priceChecked === 'all'}"
                     @click="priceChecked = 'all'">
                     All
                   </a>
                 </dd>
                 <dd v-for="(price, index) in priceFilter">
                   <a href="javascript:"
-                    @click="priceChecked = index"
+                    @click="setPriceFilter(index)"
                     :class="{'cur': priceChecked === index}">
                     {{ price.startPrice }} - {{ price.endPrice }}
                   </a>
@@ -40,7 +40,7 @@
                 <ul>
                   <li v-for="(good, index) in goodsList">
                     <div class="pic">
-                      <a href="#"><img :src="'/static/' + good.prodcutImg"></a>
+                      <a href="#"><img v-lazy="'/static/' + good.prodcutImg"></a>
                     </div>
                     <div class="main">
                       <div class="name">{{ good.productName }}</div>
@@ -56,6 +56,7 @@
           </div>
         </div>
       </div>
+      <div class="md-overlay" v-show="overLayFlag" @click="closePop"></div>
       <nav-footer></nav-footer>
     </div>
 </template>
@@ -84,13 +85,15 @@
             endPrice: '2000.00'
           }
         ],
-        priceChecked: 'all'
+        priceChecked: 'all',
+        filterBy: false,
+        overLayFlag: false
       }
     },
     components: {
       NavHeader, NavFooter, NavBread
     },
-    mounted: function () {
+    mounted() {
       this.getGoodsList()
     },
     methods: {
@@ -99,6 +102,18 @@
           let res = result.data
           this.goodsList = res.result
         })
+      },
+      showFilterPop() {
+        this.filterBy = true
+        this.overLayFlag = true
+      },
+      setPriceFilter(index) {
+        this.priceChecked = index
+        this.closePop()
+      },
+      closePop() {
+        this.filterBy = false
+        this.overLayFlag = false
       }
     }
   }
