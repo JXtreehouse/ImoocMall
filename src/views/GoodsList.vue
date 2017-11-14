@@ -1,64 +1,42 @@
-<template>
-    <div>
-      <nav-header></nav-header>
-      <nav-bread>
-        <span>goods</span>
-      </nav-bread>
-      <div class="accessory-result-page accessory-page">
-        <div class="container">
-          <div class="filter-nav">
-            <span class="sortby">Sort by:</span>
-            <a href="javascript:" class="default cur">Default</a>
-            <a href="javascript:" class="price">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
-            <a href="javascript:" class="filterby stopPop" @click="showFilterPop">Filter by</a>
-          </div>
-          <div class="accessory-result">
-            <!-- filter -->
-            <div class="filter stopPop" id="filter" :class="{'filterby-show' : filterBy}">
-              <dl class="filter-price">
-                <dt>Price:</dt>
-                <dd>
-                  <a href="javascript:"
-                    :class="{'cur' : priceChecked === 'all'}"
-                    @click="priceChecked = 'all'">
-                    All
-                  </a>
-                </dd>
-                <dd v-for="(price, index) in priceFilter">
-                  <a href="javascript:"
-                    @click="setPriceFilter(index)"
-                    :class="{'cur': priceChecked === index}">
-                    {{ price.startPrice }} - {{ price.endPrice }}
-                  </a>
-                </dd>
-              </dl>
-            </div>
-
-            <!-- search result accessories list -->
-            <div class="accessory-list-wrap">
-              <div class="accessory-list col-4">
-                <ul>
-                  <li v-for="(good, index) in goodsList">
-                    <div class="pic">
-                      <a href="#"><img v-lazy="'/static/' + good.productImage"></a>
-                    </div>
-                    <div class="main">
-                      <div class="name">{{ good.productName }}</div>
-                      <div class="price">{{ good.productPrice }}</div>
-                      <div class="btn-area">
-                        <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="md-overlay" v-show="overLayFlag" @click="closePop"></div>
-      <nav-footer></nav-footer>
-    </div>
+<template lang="pug">
+  div
+    nav-header
+    nav-bread
+      span goods
+    .accessory-result-page.accessory-page
+      .container
+        .filter-nav
+         span.sortby Sort by:
+          a.default.cur(href="javascript:") Default
+          a.price(href="javascript:")
+            | Price 
+            svg.icon.icon-arrow-short
+              use(xlink:href="#icon-arrow-short")
+          a.filterby.stopPop(href="javascript:", @click="showFilterPop") Filter by
+        .accessory-result
+          // filter
+          #filter.filter.stopPop(:class="{'filterby-show' : filterBy}")
+            dl.filter-price
+              dt Price:
+              dd
+                a(href="javascript:", :class="{'cur' : priceChecked === 'all'}", @click="priceChecked = 'all'") All
+              dd(v-for="(price, index) in priceFilter", :key="price")
+                a(href="javascript:", @click="setPriceFilter(index)", :class="{'cur': priceChecked === index}") {{ price.startPrice }} - {{ price.endPrice }}
+          // search result accessories list
+          .accessory-list-wrap
+            .accessory-list.col-4
+              ul
+                li(v-for="(good, index) in goodsList", :key="good")
+                  .pic
+                    a(href="#")
+                      img(v-lazy="'/static/' + good.productImage")
+                  .main
+                    .name {{ good.productName }}
+                    .price {{ good.productPrice }}
+                    .btn-area
+                      a.btn.btn--m(href="javascript:;") 加入购物车
+    .md-overlay(v-show="overLayFlag", @click="closePop")
+    nav-footer
 </template>
 <script>
   import axios from 'axios'
